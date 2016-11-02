@@ -51,7 +51,9 @@ void serial_Moniter(String _str, String _celsius){
 void sensorOn(boolean _binary){
   if(_binary){
     sensor.shutdown(!_binary);
-  }  
+  } else {
+    sensor.shutdown(_binary);
+  }
 }
 
 void delayFunc(int _delay){
