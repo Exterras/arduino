@@ -1,8 +1,11 @@
 #include <LiquidCrystal.h>
 #include <Wire.h>
 #include <LM75.h>
+// LCD Library : LiquidCrystal
+// LM75 Library : Wire
 
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+// RS, E, D4, D5, D6, D7
 LM75 sensor; 
 
 #define BLUE 2
@@ -30,13 +33,13 @@ void lcdTitle(String _str, int _startPoint){
   lcd.print(_str);
 }
 
-void lcd_TempeDisplay(int _startPoint){
+void lcd_TempeDisplay(int _startPoint, String _str, String _celsius){
   float tempe = (float)sensor.temp();
   lcd.setCursor(_startPoint, 1);
   
-  lcd.print("Temp: ");
+  lcd.print(_str);
   lcd.print(tempe);
-  lcd.print("C");
+  lcd.print(_celsius);
 }
 
 void serial_Moniter(String _str, String _celsius){
@@ -45,8 +48,10 @@ void serial_Moniter(String _str, String _celsius){
   Serial.println(_celsius);
 }
 
-void sensorFunc(boolean _binary){
-    sensor.shutdown(_binary);
+void sensorOn(boolean _binary){
+  if(_binary){
+    sensor.shutdown(!_binary);
+  }  
 }
 
 void delayFunc(int _delay){
@@ -68,9 +73,10 @@ void ledLight(float _stdTemp){
 void loop() {
   lcdClear(); // LCD is Clearing while information is changed.
   lcdTitle("Thermometer", 2); // Program Intro Display ("Title", startpoint)
-  lcd_TempeDisplay(0); // LCD Tempereture Display (startpoint)
+  lcd_TempeDisplay(0, "Temp: ", "C"); // LCD Tempereture Display (startpoint)
+  
   serial_Moniter("Current temp: ", " C"); // LCD Tempereture Serial Display("Title", "Celsius")
-  sensorFunc(false); // LM75 Sensor Activated = true
+  sensorOn(true); // LM75 Sensor Activated = true
   delayFunc(1000); // delay time (ms)
   ledLight(18); // led activate function (standard light change celsius)
 }
